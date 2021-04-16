@@ -1,5 +1,4 @@
-% This code tests if it can recover manually corrupts noaa data
-
+% This code tests if OLRTR can recover raw aot data
 %% load data
 addpath tensor_toolbox-master
 addpath ..
