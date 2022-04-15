@@ -27,15 +27,16 @@ function [R, E, O, iter] = solve_proj_21(D, Rec, nrank, lambda1, lambda2, Sigma_
         stopCriterion = 0;
 
         % update E
+        Res = tenzeros(size(D));
         for i = 1: D_mode
             % record residual (Bi - Li*Ri - O) for E
-            Res{i} = tenmat(D - O, i);
+            Res_i = tenmat(D - O, i);
     %         disp([num2str(size(L)) num2str(size(R{i}'))])
-            Res{i}(:,:) = double(Res{i}) - Rec{i}.L * R{i}';
-            Res{i} = tensor(Res{i});
+            Res_i(:,:) = double(Res_i) - Rec{i}.L * R{i}';
+            Res = Res + tensor(Res_i);
         end
         E_old = E;
-        temp_E = tenfun(@sum,Res{:})./D_mode;
+        temp_E = Res./D_mode;
         temp_Em = tenmat(temp_E,outlier_dim);
         for j = 1:size(temp_Em,2)
             temp_Em(:,j) = temp_Em(:,j) * max(0,1-lambda2/(D_mode*norm(temp_Em(:,j))));
@@ -55,14 +56,15 @@ function [R, E, O, iter] = solve_proj_21(D, Rec, nrank, lambda1, lambda2, Sigma_
         end
 
         % update O
+        ResO = tenzeros(size(D));
         for i = 1: D_mode
             % record residual (Bi - Li*Ri - E) for O
-            Res{i} = tenmat(D - E, i);
+            ResO_i = tenmat(D - E, i);
     %         disp([num2str(size(L)) num2str(size(R{i}'))])
-            Res{i}(:,:) = double(Res{i}) - Rec{i}.L * R{i}';
-            Res{i} = tensor(Res{i});
+            ResO_i(:,:) = double(ResO_i) - Rec{i}.L * R{i}';
+            ResO = ResO + tensor(ResO_i);
         end
-        O_temp = tenfun(@sum,Res{:})./D_mode;
+        O_temp = ResO./D_mode;
         O = Sigma_bar .* O_temp;
 
         if stopCriterion < tol
@@ -75,10 +77,13 @@ function [R, E, O, iter] = solve_proj_21(D, Rec, nrank, lambda1, lambda2, Sigma_
     %             ' stopCriterion ' num2str(stopCriterion)]);
     %     end    
     %     
+    
+    
         if ~converged && iter >= maxIter
-            disp('Maximum iterations reached') ;
+%             disp('Maximum iterations reached') ;
             converged = 1 ;    
         end
+        
     end
 
 end
