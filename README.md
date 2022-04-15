@@ -15,6 +15,7 @@ This repository contains the source code and tests developed for online robust t
   - `/tensor_toolbox-master/` is a tensor manipulation package
   - `test_numerical_simulate.m` is an experiment of OLRTR on numerically simulated tensor data
   - `test_NOAA.m` is the test code for recoverying the manually corrupted NOAA temperature data.
+  - `missing_corruptl21.m` is the funciton to generate polluted NOAA data.
   - `test_AoT.m` is the test code for recoverying raw AoT data
   - `simulate_tensor.m` is the helper function for manually corrupting tensors.
 - `/Data/` Contains dataset for testing. 
